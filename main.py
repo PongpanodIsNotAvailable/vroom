@@ -1,6 +1,16 @@
 import time
 from sensors.imu import IMU
-from logging.influx import InfluxLogger
+from utils.influx import InfluxLogger
+from sensors.rpm import RPMReader
+
+import serial
+
+ser = serial.Serial(
+    port="/dev/ttyACM0",    # or /dev/ttyAMA0 or /dev/ttyS0 depending on your wiring
+    baudrate=9600,
+    timeout=1
+)
+
 
 imu = IMU()
 influx = InfluxLogger(db="fsae_data")
@@ -11,5 +21,10 @@ while True:
     imu_data = imu.read()
 
     influx.write("imu", imu_data)
+
+
+    tps_rang = ser.readline().decode('utf-8', errors='ignore').strip()
+    if tps_rang:
+        influx.write("tps", tps_rang)
 
     time.sleep(SAMPLE_RATE)

@@ -1,3 +1,4 @@
 influxdb
 mpu6050-raspberrypi
 smbus
+pyserial
