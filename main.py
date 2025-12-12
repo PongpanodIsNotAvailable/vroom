@@ -1,3 +1,4 @@
+import os
 import time
 from sensors.imu import IMU
 from utils.influx import InfluxLogger
