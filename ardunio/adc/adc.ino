@@ -2,7 +2,7 @@ const unsigned long SAMPLE_PERIOD_MS = 10;  // 100 Hz
 unsigned long lastSample = 0;
 
 void setup() {
-  Serial.begin();
+  Serial.begin(115200);
 }
 
 void loop() {
