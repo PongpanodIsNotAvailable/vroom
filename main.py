@@ -10,20 +10,42 @@ adc = SerialADC(port="/dev/ttyACM0")
 SAMPLE_RATE = 0.01   # 100 Hz
 next_tick = time.perf_counter()
 
+last_adc = None;
+
 while True:
     # IMU
     imu_data = imu.read()
-    influx.write("imu", imu_data)
+    timestamp = time.perf_counter()
 
     adc_data = adc.read()
     if adc_data:
+        last_adc = adc_data
+
+    if last_adc:
         influx.write(
-            "adc",
+            "vehicle",
             {
-                "tps": adc_data["A1"],
-                # "tps": adc_data["A1"],
-            }
+                "ax": imu_data["ax"],
+                "ay": imu_data["ay"],
+                "az": imu_data["az"],
+                "tacho": last_adc["A0"],
+                "tps": last_adc["A1"],
+                "water": last_adc["A2"],
+                "fuel": last_adc["A3"],
+            },
+            timestamp=timestamp
         )
+    # influx.write("imu", imu_data)
+
+    # adc_data = adc.read()
+    # if adc_data:
+    #     influx.write(
+    #         "adc",
+    #         {
+    #             "tps": adc_data["A1"],
+    #             # "tps": adc_data["A1"],
+    #         }
+    #     )
 
 
  # ---- Timing (stable 100 Hz) ----
