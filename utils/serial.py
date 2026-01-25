@@ -7,9 +7,9 @@ class SerialADC:
     def __init__(
         self,
         port="/dev/ttyACM0",
-        baudrate=9600,
+        baudrate=115200,
         timeout=0.05,
-        expected_fields=5,
+        expected_fields=4,
         reconnect_interval=1.0
     ):
         self.port = port
@@ -74,12 +74,15 @@ class SerialADC:
         except ValueError:
             return None
 
+        timestamp = time.perf_counter()
+
+
         return {
-            "time_ms": values[0],
-            "A0": values[1],
-            "A1": values[2],
-            "A2": values[3],
-            "A3": values[4],
+            "time": timestamp,
+            "A0": values[0],
+            "A1": values[1],
+            "A2": values[2],
+            "A3": values[3],
         }
 
     def _close(self):
